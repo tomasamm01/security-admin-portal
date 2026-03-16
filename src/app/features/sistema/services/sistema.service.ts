@@ -2,32 +2,44 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Sistema } from '../models/sistema.model';
+import { environment } from '../../../../environments/environment';
+
+// Interface para actualizar estado
+export interface UpdateState {
+  id: number;
+  estado: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class SistemaService {
-  private apiUrl = 'api/sistemas'; // Ajustar según tu API
+  private baseUrl = environment.pathApi;
 
   constructor(private http: HttpClient) {}
 
+  // GET: /sistema/obtener-todos
   getSistemas(): Observable<Sistema[]> {
-    return this.http.get<Sistema[]>(this.apiUrl);
+    return this.http.get<Sistema[]>(`${this.baseUrl}/sistema/obtener-todos`);
   }
 
+  // GET: /sistema/obtener/{id}
   getSistemaById(id: number): Observable<Sistema> {
-    return this.http.get<Sistema>(`${this.apiUrl}/${id}`);
+    return this.http.get<Sistema>(`${this.baseUrl}/sistema/obtener/${id}`);
   }
 
-  createSistema(sistema: Sistema): Observable<Sistema> {
-    return this.http.post<Sistema>(this.apiUrl, sistema);
+  // POST: /sistema/new
+  createSistema(sistema: Sistema): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}/sistema/new`, sistema);
   }
 
-  updateSistema(id: number, sistema: Sistema): Observable<Sistema> {
-    return this.http.put<Sistema>(`${this.apiUrl}/${id}`, sistema);
+  // POST: /sistema/update
+  updateSistema(sistema: Sistema): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}/sistema/update`, sistema);
   }
 
-  deleteSistema(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  // POST: /sistema/update-state
+  updateEstado(updateData: UpdateState): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}/sistema/update-state`, updateData);
   }
 }
