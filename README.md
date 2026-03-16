@@ -24,7 +24,6 @@ Portal de administración de seguridad construido con Angular 14 y Bootstrap 5 p
 
 - `@auth0/angular-jwt` - Manejo de tokens JWT
 - `@ng-bootstrap/ng-bootstrap` - Componentes Bootstrap para Angular
-- `angularx-qrcode` - Generación de códigos QR
 - `file-saver` - Descarga de archivos
 - `html2canvas` + `jspdf` - Generación de PDFs
 - `jszip` - Compresión de archivos
