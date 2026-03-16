@@ -5,11 +5,13 @@ Portal de administración de seguridad construido con Angular 14 y Bootstrap 5 p
 ## 🚀 Características
 
 - **Gestión de Usuarios**: Creación, edición y eliminación de usuarios con roles y permisos
+- **Gestión de Sistemas**: Administración de sistemas de acceso y configuraciones
 - **Control de Accesos**: Administración de políticas de acceso y autenticación
 - **Panel de Administración**: Interfaz intuitiva para la gestión de seguridad
 - **Exportación de Datos**: Generación de reportes en PDF y Excel
 - **Autenticación JWT**: Integración con Auth0 para gestión segura de tokens
 - **Interfaz Responsiva**: Diseño adaptativo para escritorio y móviles
+- **Backend Integration**: Conexión con API REST ASP.NET
 
 ## 🛠️ Stack Tecnológico
 
@@ -80,15 +82,23 @@ npm run test -- --code-coverage
 
 ```
 src/
-├── app/                 # Componentes y módulos principales
-│   ├── components/      # Componentes reutilizables
-│   ├── pages/          # Páginas de la aplicación
-│   ├── services/       # Servicios y API calls
-│   ├── models/         # Modelos de datos
-│   └── utils/          # Utilidades y helpers
-├── assets/             # Recursos estáticos
-├── environments/       # Configuración de entornos
-└── styles.scss         # Estilos globales
+├── app/
+│   ├── core/              # Layout principal y componentes base
+│   │   ├── layout/        # Header, navbar, sidebar
+│   │   └── guards/        # Guards de autenticación
+│   ├── features/          # Módulos de funcionalidad
+│   │   ├── users/         # Gestión de usuarios
+│   │   ├── sistema/       # Gestión de sistemas
+│   │   └── home/          # Dashboard principal
+│   ├── shared/            # Componentes compartidos
+│   │   ├── components/    # Tablas, formularios, toast
+│   │   └── services/      # Utilidades comunes
+│   └── app-routing.module.ts # Configuración de rutas
+├── assets/                 # Recursos estáticos
+├── environments/           # Configuración de entornos
+│   ├── environment.ts      # Desarrollo (pathApi)
+│   └── environment.prod.ts # Producción
+└── styles.scss             # Estilos globales
 ```
 
 ## ⚙️ Configuración de Entornos
@@ -96,14 +106,44 @@ src/
 - `environment.ts` - Configuración de desarrollo
 - `environment.prod.ts` - Configuración de producción
 
+### Configuración de API Backend
+
+Las URLs del backend se configuran mediante la propiedad `pathApi` en los archivos de entorno:
+
+**Desarrollo (`environment.ts`):**
+```typescript
+export const environment = {
+  production: false,
+  pathApi: 'http://localhost:3000/api' // URL del backend ASP.NET
+};
+```
+
+**Producción (`environment.prod.ts`):**
+```typescript
+export const environment = {
+  production: true,
+  pathApi: 'https://tu-api-produccion.com/api' // URL del backend en producción
+};
+```
+
 ## 🔐 Variables de Entorno
 
-Crear archivo `.env` en la raíz del proyecto:
+El proyecto utiliza configuración de entornos de Angular. La URL del backend se configura en:
+- `src/environments/environment.ts` para desarrollo
+- `src/environments/environment.prod.ts` para producción
 
-```env
-API_BASE_URL=http://localhost:3000/api
-AUTH0_DOMAIN=your-auth0-domain
-AUTH0_CLIENT_ID=your-auth0-client-id
+### Variables adicionales (opcional)
+Si necesitas variables adicionales como Auth0, puedes agregarlas al environment:
+
+```typescript
+export const environment = {
+  production: false,
+  pathApi: 'http://localhost:3000/api',
+  auth0: {
+    domain: 'your-auth0-domain',
+    clientId: 'your-auth0-client-id'
+  }
+};
 ```
 
 ## 🎨 Personalización
@@ -126,7 +166,37 @@ Los componentes siguen la estructura estándar de Angular:
 - `.component.html` - Template
 - `.component.scss` - Estilos específicos
 
-## 🚀 Despliegue
+## � Integración con Backend
+
+### Endpoints Configurados
+
+**Sistemas:**
+- `GET /sistema/obtener-todos` - Obtener todos los sistemas
+- `GET /sistema/obtener/{id}` - Obtener sistema por ID
+- `POST /sistema/new` - Crear nuevo sistema
+- `POST /sistema/update` - Actualizar sistema
+- `POST /sistema/update-state` - Actualizar estado del sistema
+
+**Usuarios:**
+- `GET /usuario/obtener-todos` - Obtener todos los usuarios
+- `GET /usuario/obtener/{id}` - Obtener usuario por ID
+- `POST /usuario/new` - Crear nuevo usuario
+- `POST /usuario/update` - Actualizar usuario
+- `POST /usuario/update-state` - Actualizar estado del usuario
+
+### Servicios
+
+- `SistemaService` - Gestión de sistemas con backend ASP.NET
+- `UsersService` - Gestión de usuarios con backend ASP.NET
+
+### Tipado de Datos
+
+Interfaces TypeScript para comunicación con backend:
+- `Sistema` - Modelo de datos para sistemas
+- `Users` - Modelo de datos para usuarios
+- `UpdateState` / `UpdateUserState` - Para actualización de estados
+
+## �🚀 Despliegue
 
 ### Build de Producción
 ```bash
