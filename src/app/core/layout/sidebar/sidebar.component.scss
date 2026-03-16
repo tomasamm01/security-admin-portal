@@ -1,0 +1,133 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  transition: width 0.3s ease;
+  width: var(--sidebar-collapsed);
+  background: #1B432C;
+  color: #fff;
+  z-index: 100;
+
+  &.expanded {
+    width: var(--sidebar-expanded);
+
+    .header {
+      .title {
+        opacity: 1;
+        visibility: visible;
+        margin-left: 0;
+      }
+    }
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 10px;
+    background: #1B432C;
+    gap: 10px;
+    transition: background-color 0.2s ease;
+
+    &.clickable {
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      &:active {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+
+    .icon {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      
+      img {
+        max-width: 35px;
+        height: auto;
+      }
+    }
+
+    .title {
+      font-size: 20px;
+      color: #fff;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      font-weight: 600;
+      flex: 1;
+      opacity: 0;
+      visibility: hidden;
+      margin-left: -200px;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      border-radius: 6px;
+      min-width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+
+      i {
+        font-size: 22px;
+        pointer-events: none;
+        display: block;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      &:active {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.3);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  .content {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: calc(100vh - 70px);
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
+}

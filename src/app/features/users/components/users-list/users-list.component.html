@@ -1,0 +1,13 @@
+<app-menu-listado
+  [opciones]="opciones"
+  [datos]="users"
+  [columnasExtras]="columnasExtras"
+  [botonesAccion]="botonesAccion"
+  [loading]="loading"
+  [error]="error"
+  (nuevo)="onNuevo($event)"
+  (editar)="onEditar($event)"
+  (actualizarEstado)="onActualizarEstado($event)"
+  (accionBoton)="onAccionBoton($event)"
+  (refrescar)="onRefrescar()">
+</app-menu-listado>

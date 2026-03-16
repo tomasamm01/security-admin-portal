@@ -1,0 +1,151 @@
+<div class="container py-2 px-3 px-md-2 mx-md-0 d-flex justify-content-center" style="max-width: 1200px;">
+  <div class="w-100" style="max-width: 1000px;">
+    <div class="mb-4">
+      <app-back-button [ruta]="'/users'"></app-back-button>
+    </div>
+    <div class="mt-4">
+      <form [formGroup]="usersForm" (ngSubmit)="onSubmit()">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+          {{ idUser ? 'Editar Usuario' : 'Nuevo Usuario' }}
+          <div class="spinner-border spinner-border-sm ms-2" role="status" *ngIf="loading">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </h5>
+      </div>
+      
+      <div class="card-body">
+        <div class="row">
+          <!-- Columna izquierda: Imagen -->
+          <div class="col-md-4">
+            <div class="text-center">
+              <h6 class="mb-3">Foto del Usuario</h6>
+              <div class="image-upload-container mx-auto mb-3">
+                <div class="image-preview rounded-circle" [style.backgroundImage]="'url(' + (imagenPreview || 'assets/img/user-placeholder.png') + ')'"></div>
+              </div>
+              <div>
+                <label for="imagen" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-camera me-2"></i> Cambiar foto
+                </label>
+                <input type="file" id="imagen" (change)="onFileChange($event)" accept="image/*" class="d-none">
+                <small class="text-muted d-block mt-2">Formatos: JPG, PNG</small>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Columna derecha: Información del usuario -->
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="nombre" class="form-label">Nombre Completo</label>
+                  <input type="text" class="form-control" id="nombre" formControlName="nombre" required>
+                  <div class="invalid-feedback" *ngIf="usersForm.get('nombre')?.invalid && usersForm.get('nombre')?.touched">
+                    El nombre es requerido
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" formControlName="email" required>
+                  <div class="invalid-feedback" *ngIf="usersForm.get('email')?.invalid && usersForm.get('email')?.touched">
+                    Ingrese un email válido
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="username" class="form-label">Nombre de Usuario</label>
+                  <input type="text" class="form-control" id="username" formControlName="username" required>
+                  <div class="invalid-feedback" *ngIf="usersForm.get('username')?.invalid && usersForm.get('username')?.touched">
+                    El nombre de usuario es requerido
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="password" class="form-label">Contraseña {{ idUser ? '(dejar en blanco para mantener)' : '' }}</label>
+                  <input type="password" class="form-control" id="password" formControlName="password" [required]="!idUser">
+                  <div class="invalid-feedback" *ngIf="usersForm.get('password')?.invalid && usersForm.get('password')?.touched">
+                    {{ idUser ? 'La contraseña es requerida para nuevos usuarios' : 'La contraseña es requerida' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="rol" class="form-label">Rol</label>
+                  <select class="form-select" id="rol" formControlName="rol" required>
+                    <option value="">Seleccionar rol...</option>
+                    <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="usersForm.get('rol')?.invalid && usersForm.get('rol')?.touched">
+                    El rol es requerido
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="departamento" class="form-label">Departamento</label>
+                  <select class="form-select" id="departamento" formControlName="departamento">
+                    <option value="">Seleccionar departamento...</option>
+                    <option *ngFor="let depto of departamentos" [value]="depto">{{ depto }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="telefono" class="form-label">Teléfono</label>
+                  <input type="tel" class="form-control" id="telefono" formControlName="telefono">
+                  <div class="invalid-feedback" *ngIf="usersForm.get('telefono')?.invalid && usersForm.get('telefono')?.touched">
+                    Ingrese un teléfono válido (6-15 dígitos)
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-check form-switch mt-4">
+                  <input class="form-check-input" type="checkbox" id="estado" formControlName="estado" checked>
+                  <label class="form-check-label" for="estado">Activo</label>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <textarea class="form-control" id="observaciones" formControlName="observaciones" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Error message -->
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-end mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="!usersForm.valid || loading">
+            <i class="bi bi-floppy me-2"></i>
+            Guardar Usuario
+          </button>
+        </div>
+      </div>
+    </div>
+    </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+<nav class="navbar justify-content-end me-3">
+    <div ngbDropdown class="d-inline-block">
+        <button class="badge d-flex align-items-center p-1 pe-2 text-white bg-primary bg-opacity-75 border rounded-pill mt-3" id="dropdownBasic1" ngbDropdownToggle>
+            <img class="rounded-circle me-1" width="24" height="24" src="https://sistemas.amepla.org.ar/cdn/img//user.jpg" alt="Imagen de perfil"> 
+            <span class="d-none d-sm-block">{{ usuario.Nombre }}</span>
+        </button>
+        
+        <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu aria-labelledby="dropdownBasic1">
+           <li *ngIf="!esProduccion">
+                    <button type="button" class="dropdown-item" tabindex="0" (click)="CambiarPerfil('TESORERIA')">
+                        <i class="bi bi-person" aria-hidden="true"></i> TESORERIA
+                    </button>
+                </li>
+                <li *ngIf="!esProduccion">
+                    <button type="button" class="dropdown-item" tabindex="0" (click)="CambiarPerfil('ADMINISTRADOR')" ><!----> 
+                        <i class="bi bi-person" aria-hidden="true"></i> ADMINISTRADOR
+                    </button>
+                </li>
+                <li>
+                    <a class="dropdown-item text-danger mt-5 border-top" (click)="CerrarSesion()" type="button">
+                        <small><i class="bi bi-box-arrow-right" aria-hidden="true"></i> Cerrar sesión</small>
+                    </a>
+                </li>
+        </ul>
+    </div>
+</nav>

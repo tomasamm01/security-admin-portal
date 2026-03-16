@@ -1,0 +1,31 @@
+<nav class="sidebar-nav">
+  <ul class="nav-list">
+    <li class="nav-item" *ngFor="let item of navItems">
+      <ng-container *ngIf="hasPermission(item)">
+        <ng-container *ngIf="!item.children; else dropdown">
+          <a [routerLink]="item.routerLink" class="nav-link" [title]="item.tooltip" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="{{ item.icon }}"></i>
+            <span class="nav-text">{{ item.title }}</span>
+          </a>
+        </ng-container>
+        <ng-template #dropdown>
+          <div class="nav-link dropdown-toggle" [class.active]="item.isOpen" (click)="toggleDropdown(item)" [title]="item.tooltip">
+            <i class="{{ item.icon }}"></i>
+            <span class="nav-text">{{ item.title }}</span>
+            <i class="bi bi-chevron-down chevron-icon" [class.rotated]="item.isOpen"></i>
+          </div>
+          <ul class="dropdown-menu" *ngIf="item.isOpen">
+            <li class="dropdown-item" *ngFor="let child of item.children">
+              <ng-container *ngIf="hasPermission(child)">
+                <a [routerLink]="child.routerLink" class="nav-link" [title]="child.tooltip">
+                  <i class="{{ child.icon }}"></i>
+                  <span class="nav-text">{{ child.title }}</span>
+                </a>
+              </ng-container>
+            </li>
+          </ul>
+        </ng-template> 
+      </ng-container>
+    </li>
+  </ul>
+</nav>

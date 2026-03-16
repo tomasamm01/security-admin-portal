@@ -1,0 +1,13 @@
+<app-sidebar
+  [isExpanded]="sidebarExpanded"
+  (toggleSidebar)="sidebarExpanded = $event"
+  *ngIf="isValid && (perfil == 'ADMINISTRADOR' || perfil=='TESORERIA' || perfil == 'MESA DE ENTRADAS')"
+>
+</app-sidebar>
+
+<div
+  class="{{(perfil == 'ADMINISTRADOR' || perfil=='TESORERIA' || perfil == 'MESA DE ENTRADAS') ? 'content' :''}} pb-3"
+  [ngClass]="{ sidebarExpanded: sidebarExpanded }">
+  <app-navbar></app-navbar>
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,110 @@
+
+<div class="container py-2 px-3 px-md-2 mx-md-0 d-flex justify-content-center" style="max-width: 1200px;">
+  <div class="w-100" style="max-width: 1000px;">
+    <div class="mb-4">
+      <app-back-button [ruta]="'/sistemas'"></app-back-button>
+    </div>
+    <div class="mt-4">
+      <form [formGroup]="sistemaForm" (ngSubmit)="onSubmit()">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">
+          {{ idSistema ? 'Editar Sistema' : 'Nuevo Sistema' }}
+          <div class="spinner-border spinner-border-sm ms-2" role="status" *ngIf="loading">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </h5>
+      </div>
+      
+      <div class="card-body">
+        <div class="row">
+          <!-- Columna izquierda: Imagen -->
+          <div class="col-md-4">
+            <div class="text-center">
+              <h6 class="mb-3">Imagen del Sistema</h6>
+              <div class="image-upload-container mx-auto mb-3">
+                <div class="image-preview rounded-circle" [style.backgroundImage]="'url(' + (imagenPreview || 'assets/img/system-placeholder.png') + ')'"></div>
+              </div>
+              <div>
+                <label for="imagen" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-camera me-2"></i> Cambiar imagen
+                </label>
+                <input type="file" id="imagen" (change)="onFileChange($event)" accept="image/*" class="d-none">
+                <small class="text-muted d-block mt-2">Formatos: JPG, PNG</small>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Columna derecha: Información del sistema -->
+          <div class="col-md-8">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre del Sistema</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre" required>
+              <div class="invalid-feedback" *ngIf="sistemaForm.get('nombre')?.invalid && sistemaForm.get('nombre')?.touched">
+                El nombre es requerido
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="url" class="form-label">URL</label>
+              <input type="url" class="form-control" id="url" formControlName="url" required>
+              <div class="invalid-feedback" *ngIf="sistemaForm.get('url')?.invalid && sistemaForm.get('url')?.touched">
+                Ingrese una URL válida (http:// o https://)
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <textarea class="form-control" id="observaciones" formControlName="observaciones" rows="3"></textarea>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="estado" formControlName="estado" checked>
+                  <label class="form-check-label" for="estado">Activo</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="desktop" formControlName="desktop" role="switch">
+                  <label class="form-check-label" for="desktop">Desktop</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="ownPassword" formControlName="ownPassword" role="switch">
+                  <label class="form-check-label" for="ownPassword">Contraseña propia</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="intranet" formControlName="intranet" role="switch">
+                  <label class="form-check-label" for="intranet">Intranet</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Error message -->
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-end mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="!sistemaForm.valid || loading">
+            <i class="bi bi-floppy me-2"></i>
+            Guardar Sistema
+          </button>
+        </div>
+      </div>
+    </div>
+    </form>
+    </div>
+  </div>
+</div>

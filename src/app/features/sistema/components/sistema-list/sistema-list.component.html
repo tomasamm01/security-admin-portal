@@ -1,0 +1,15 @@
+<div class="container-fluid">
+
+  <app-menu-listado
+    [opciones]="opciones"
+    [datos]="sistemas"
+    [cargando]="loading"
+    [columnasExtras]="columnasExtras"
+    [botonesAccion]="botonesAccion"
+    (nuevo)="onNuevo($event)"
+    (editar)="onEditar($event)"
+    (actualizarEstado)="onActualizarEstado($event)"
+    (accionBoton)="onAccionBoton($event)"
+    (refrescar)="onRefrescar()">
+  </app-menu-listado>
+</div>

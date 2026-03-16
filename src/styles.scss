@@ -1,0 +1,115 @@
+/* You can add global styles to this file, and also import other style files */
+
+$primary:#1B432C;
+
+/* CSS Variables para layout responsivo */
+:root {
+  --sidebar-collapsed: 60px;
+  --sidebar-expanded: 250px;
+  --content-padding-collapsed: 30px;
+  --content-padding-expanded: 15px;
+}
+
+/* Media queries para diferentes dispositivos */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-collapsed: 0px;
+    --sidebar-expanded: 280px;
+    --content-padding-collapsed: 15px;
+    --content-padding-expanded: 10px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --sidebar-expanded: 300px;
+    --content-padding-collapsed: 40px;
+    --content-padding-expanded: 20px;
+  }
+}
+
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+
+// Create your own map
+$custom-colors: (
+  "gold":  #A58C54
+);
+
+// Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+/*Fuente personalizada*/
+@font-face {
+    font-family: 'gotham_roundedbook';
+    src: url('assets/font/gothamrounded-book-webfont.eot');
+    src: url('assets/font/gothamrounded-book-webfont.eot?#iefix') format('embedded-opentype'),
+         url('assets/font/gothamrounded-book-webfont.woff2') format('woff2'),
+         url('assets/font/gothamrounded-book-webfont.woff') format('woff'),
+         url('assets/font/gothamrounded-book-webfont.ttf') format('truetype'),
+         url('assets/font/gothamrounded-book-webfont.svg#gotham_roundedbook') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
+
+html,
+body {
+  height: 100%;
+  color:#1B432C;
+  font-size: 15px;
+  font-family: 'gotham_roundedbook';
+  background-color: #fcfcfc;
+}
+
+h1{
+  font-weight: bold;
+  margin-bottom:1.7rem ;
+}
+
+h1, h2{
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.btn-gold{
+  color:white;
+  --bs-btn-hover-color: white;
+}
+
+.breadcrumb {
+  a {
+    font-size: 0.9rem;
+    color: #575757 !important;
+    text-decoration: none;
+  }
+}
+
+.table thead th,
+.table td {
+    border: none;
+}
+
+.table tbody td:first-child {
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.table tbody td:last-child {
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.tooltip-vencida{
+  --bs-tooltip-bg: var(--bs-danger);
+}
+
+.tooltip-por-vencer{
+  --bs-tooltip-bg: var(--bs-secondary);
+}
+
+@import "../node_modules/quill/dist/quill.core.css";
+@import "../node_modules/quill/dist/quill.snow.css";
