@@ -1,0 +1,265 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <span *ngIf="!modoEdicion">Asignar Perfiles a Sistema</span>
+            <span *ngIf="modoEdicion">Editar Asignaciones</span>
+          </h5>
+          <button type="button" class="btn-close" (click)="cancelar()"></button>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="assignForm">
+            <!-- Selección de Sistema -->
+            <div class="mb-4">
+              <label for="sistemaSeleccionado" class="form-label">Sistema *</label>
+              <select class="form-select" 
+                      id="sistemaSeleccionado" 
+                      formControlName="sistemaSeleccionado"
+                      (change)="onSistemaChange($event)">
+                <option value="">Seleccione un sistema...</option>
+                <option *ngFor="let sistema of sistemas" [value]="sistema.id">
+                  {{ sistema.nombre }}
+                </option>
+              </select>
+              <div class="text-danger small" *ngIf="getFieldError('sistemaSeleccionado')">
+                {{ getFieldError('sistemaSeleccionado') }}
+              </div>
+            </div>
+
+            <!-- Información del Sistema Seleccionado -->
+            <div *ngIf="sistemaSeleccionado" class="alert alert-info mb-4">
+              <h6><i class="bi bi-info-circle"></i> {{ sistemaSeleccionado.nombre }}</h6>
+              <p class="mb-2">{{ sistemaSeleccionado.descripcion }}</p>
+              
+              <!-- Estadísticas de Asignación -->
+              <div class="row text-center">
+                <div class="col-md-3">
+                  <div class="stat-item">
+                    <div class="stat-number">{{ getEstadisticasAsignacion().totalAsignados }}</div>
+                    <div class="stat-label">Asignados</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stat-item">
+                    <div class="stat-number">{{ getEstadisticasAsignacion().totalDisponibles }}</div>
+                    <div class="stat-label">Disponibles</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stat-item">
+                    <div class="stat-number">{{ getEstadisticasAsignacion().totalPerfiles }}</div>
+                    <div class="stat-label">Total Perfiles</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stat-item">
+                    <div class="stat-number">{{ getEstadisticasAsignacion().porcentajeAsignado | number:'1.0-1' }}%</div>
+                    <div class="stat-label">Cobertura</div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Barra de Progreso -->
+              <div class="progress mt-3" style="height: 8px;">
+                <div class="progress-bar" 
+                     [class]="getBadgeColor(getEstadisticasAsignacion().porcentajeAsignado)"
+                     [style.width.%]="getEstadisticasAsignacion().porcentajeAsignado">
+                </div>
+              </div>
+            </div>
+
+            <!-- Perfiles Ya Asignados -->
+            <div *ngIf="perfilesAsignados.length > 0" class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Perfiles Actualmente Asignados</h6>
+                <span class="badge bg-primary">{{ perfilesAsignados.length }}</span>
+              </div>
+              <div class="row">
+                <div *ngFor="let asignado of perfilesAsignados" class="col-md-6 mb-2">
+                  <div class="card border-success">
+                    <div class="card-body py-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong>{{ asignado.perfilNombre }}</strong>
+                          <br>
+                          <small class="text-muted">{{ asignado.perfilDescripcion }}</small>
+                        </div>
+                        <div class="d-flex align-items-center">
+                          <i class="bi bi-check-circle-fill text-success me-2"></i>
+                          <button type="button" 
+                                  class="btn btn-sm btn-outline-danger" 
+                                  (click)="eliminarAsignacion(asignado)"
+                                  title="Eliminar asignación">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Perfiles Disponibles para Asignar -->
+            <div *ngIf="sistemaSeleccionado" class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Perfiles Disponibles</h6>
+                <div>
+                  <button type="button" 
+                          class="btn btn-sm btn-outline-primary me-2" 
+                          (click)="seleccionarTodos()"
+                          [disabled]="perfilesDisponibles.length === 0">
+                    <i class="bi bi-check-all"></i> Seleccionar Todos
+                  </button>
+                  <button type="button" 
+                          class="btn btn-sm btn-outline-secondary" 
+                          (click)="deseleccionarTodos()"
+                          [disabled]="perfilesSeleccionadosArray.length === 0">
+                    <i class="bi bi-x-square"></i> Deseleccionar Todos
+                  </button>
+                </div>
+              </div>
+
+              <!-- Filtro de Perfiles -->
+              <div class="mb-3">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-search"></i></span>
+                  <input type="text" 
+                         class="form-control" 
+                         placeholder="Buscar perfiles..."
+                         (input)="filtrarPerfiles($event.target.value)">
+                </div>
+              </div>
+
+              <div class="row">
+                <div *ngFor="let perfil of perfilesDisponibles" class="col-md-6 mb-2">
+                  <div class="card">
+                    <div class="card-body py-2">
+                      <div class="form-check">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               [id]="'perfil-' + perfil.id"
+                               [value]="perfil.id"
+                               [checked]="isPerfilSeleccionado(perfil.id)"
+                               (change)="onPerfilChange(perfil.id, $event)">
+                        <label class="form-check-label w-100" [for]="'perfil-' + perfil.id">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                              <strong>{{ perfil.nombre }}</strong>
+                              <br>
+                              <small class="text-muted">{{ perfil.descripcion }}</small>
+                            </div>
+                            <i class="bi bi-plus-circle text-muted"></i>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="perfilesDisponibles.length === 0" class="text-center py-3">
+                <i class="bi bi-inbox display-4 text-muted"></i>
+                <p class="text-muted mt-2">No hay perfiles disponibles para asignar</p>
+              </div>
+            </div>
+
+            <!-- Validación de Perfiles Seleccionados -->
+            <div *ngIf="perfilesSeleccionadosArray.length === 0 && sistemaSeleccionado && assignForm.get('perfilesSeleccionados')?.touched" 
+                 class="alert alert-warning">
+              <i class="bi bi-exclamation-triangle"></i>
+              Debe seleccionar al menos un perfil para continuar
+            </div>
+
+            <!-- Botones de Acción -->
+            <div *ngIf="sistemaSeleccionado" class="d-flex justify-content-end gap-2">
+              <button type="button" 
+                      class="btn btn-secondary" 
+                      (click)="cancelar()">
+                Cancelar
+              </button>
+              <button type="submit" 
+                      class="btn btn-primary" 
+                      [disabled]="!isFormValid || loading"
+                      (click)="guardarAsignaciones()">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <span *ngIf="!modoEdicion">Asignar Perfiles</span>
+                <span *ngIf="modoEdicion">Actualizar Asignaciones</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de Información -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Información de Asignación</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <h6>¿Cómo funciona?</h6>
+            <p class="small text-muted">
+              Seleccione un sistema y luego elija los perfiles que desea asignarle. 
+              Un sistema puede tener múltiples perfiles asignados.
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <h6>Tipos de Perfiles</h6>
+            <ul class="small">
+              <li><strong>Administrador:</strong> Acceso completo</li>
+              <li><strong>Gestor:</strong> Gestión de usuarios</li>
+              <li><strong>Operador:</strong> Operaciones básicas</li>
+              <li><strong>Analista:</strong> Solo lectura y reportes</li>
+            </ul>
+          </div>
+
+          <div class="alert alert-info">
+            <h6><i class="bi bi-lightbulb"></i> Consejo</h6>
+            <p class="small mb-0">
+              Asigne solo los perfiles necesarios para cada sistema. 
+              Demasiados perfiles pueden complicar la gestión de permisos.
+            </p>
+          </div>
+
+          <div class="alert alert-warning">
+            <h6><i class="bi bi-shield-check"></i> Seguridad</h6>
+            <p class="small mb-0">
+              Las asignaciones determinan qué acciones pueden realizar los usuarios 
+              en cada sistema. Revíselas cuidadosamente.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen de Selección -->
+      <div *ngIf="sistemaSeleccionado" class="card mt-3">
+        <div class="card-header">
+          <h6 class="mb-0">Resumen de Selección</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-2">
+            <small class="text-muted">Sistema:</small>
+            <strong>{{ sistemaSeleccionado.nombre }}</strong>
+          </div>
+          <div class="mb-2">
+            <small class="text-muted">Perfiles seleccionados:</small>
+            <strong>{{ perfilesSeleccionadosArray.length }}</strong>
+          </div>
+          <div class="mb-2">
+            <small class="text-muted">Estado:</small>
+            <span class="badge" 
+                  [class]="isFormValid ? 'bg-success' : 'bg-warning'">
+              {{ isFormValid ? 'Válido' : 'Incompleto' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

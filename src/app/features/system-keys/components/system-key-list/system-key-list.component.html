@@ -1,0 +1,184 @@
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2>Gestión de API Keys del Sistema</h2>
+      <p class="text-muted">Administra las API keys de acceso a nivel sistema</p>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-primary" (click)="createApiKey()">
+        <i class="bi bi-plus-circle"></i> Nueva API Key
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando API keys...</p>
+  </div>
+
+  <!-- API Keys Table -->
+  <div *ngIf="!loading" class="card">
+    <div class="card-header">
+      <h5 class="mb-0">API Keys Existentes</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="apiKeys.length === 0" class="text-center py-4">
+        <i class="bi bi-key display-1 text-muted"></i>
+        <p class="text-muted mt-3">No hay API keys configuradas</p>
+        <button class="btn btn-outline-primary" (click)="createApiKey()">
+          Crear primera API Key
+        </button>
+      </div>
+
+      <div *ngIf="apiKeys.length > 0" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Permisos</th>
+              <th>Estado</th>
+              <th>Último Uso</th>
+              <th>Expira</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let apiKey of apiKeys" 
+                [class.table-warning]="isExpired(apiKey)"
+                [class.table-secondary]="!apiKey.isActive">
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-key me-2"></i>
+                  <div>
+                    <strong>{{ apiKey.name }}</strong>
+                    <br>
+                    <small class="text-muted">{{ apiKey.description }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-info">{{ getKeyTypeLabel(apiKey.keyType) }}</span>
+              </td>
+              <td>
+                <small class="text-muted">
+                  {{ getPermissionsNames(apiKey) }}
+                </small>
+              </td>
+              <td>
+                <span *ngIf="apiKey.isActive && !isExpired(apiKey)" class="badge bg-success">
+                  Activa
+                </span>
+                <span *ngIf="!apiKey.isActive" class="badge bg-secondary">
+                  Inactiva
+                </span>
+                <span *ngIf="isExpired(apiKey)" class="badge bg-warning">
+                  Expirada
+                </span>
+              </td>
+              <td>
+                <small>{{ formatLastUsed(apiKey.lastUsedAt) }}</small>
+              </td>
+              <td>
+                <small *ngIf="apiKey.expiresAt">
+                  {{ formatDate(apiKey.expiresAt) }}
+                </small>
+                <small *ngIf="!apiKey.expiresAt" class="text-muted">
+                  No expira
+                </small>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" 
+                          class="btn btn-outline-primary" 
+                          (click)="viewApiKey(apiKey)"
+                          title="Ver detalles">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button type="button" 
+                          class="btn btn-outline-secondary" 
+                          (click)="editApiKey(apiKey)"
+                          title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button type="button" 
+                          class="btn btn-outline-info" 
+                          (click)="copyToClipboard(apiKey)"
+                          title="Copiar key">
+                    <i class="bi bi-clipboard"></i>
+                  </button>
+                  <button type="button" 
+                          *ngIf="apiKey.isActive && !isExpired(apiKey)"
+                          class="btn btn-outline-warning" 
+                          (click)="deactivateApiKey(apiKey)"
+                          title="Desactivar">
+                    <i class="bi bi-pause"></i>
+                  </button>
+                  <button type="button" 
+                          *ngIf="!apiKey.isActive && !isExpired(apiKey)"
+                          class="btn btn-outline-success" 
+                          (click)="activateApiKey(apiKey)"
+                          title="Activar">
+                    <i class="bi bi-play"></i>
+                  </button>
+                  <button type="button" 
+                          *ngIf="canRegenerate(apiKey)"
+                          class="btn btn-outline-danger" 
+                          (click)="regenerateApiKey(apiKey)"
+                          title="Regenerar">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </button>
+                  <button type="button" 
+                          class="btn btn-outline-danger" 
+                          (click)="revokeApiKey(apiKey)"
+                          title="Revocar permanentemente">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div *ngIf="apiKeys.length > 0" class="row mt-4">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-primary">{{ apiKeys.length }}</h5>
+          <p class="card-text">Total API Keys</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-success">{{ apiKeys.filter(k => k.isActive && !isExpired(k)).length }}</h5>
+          <p class="card-text">API Keys Activas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-warning">{{ apiKeys.filter(k => isExpired(k)).length }}</h5>
+          <p class="card-text">API Keys Expiradas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-secondary">{{ apiKeys.filter(k => !k.isActive).length }}</h5>
+          <p class="card-text">API Keys Inactivas</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

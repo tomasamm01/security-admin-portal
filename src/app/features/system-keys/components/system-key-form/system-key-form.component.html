@@ -1,0 +1,201 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">
+            <span *ngIf="mode === 'create'">Nueva API Key</span>
+            <span *ngIf="mode === 'edit'">Editar API Key</span>
+            <span *ngIf="mode === 'view'">Detalles de API Key</span>
+          </h5>
+          <button type="button" class="btn-close" (click)="onCancel()"></button>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="apiKeyForm" (ngSubmit)="onSubmit()">
+            <!-- Información Básica -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label">Nombre *</label>
+                <input type="text" 
+                      class="form-control" 
+                      id="name" 
+                      formControlName="name"
+                      [readonly]="mode === 'view'">
+                <div class="text-danger small" *ngIf="getFieldError('name')">
+                  {{ getFieldError('name') }}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="keyType" class="form-label">Tipo de API Key *</label>
+                <select class="form-select" 
+                        id="keyType" 
+                        formControlName="keyType"
+                        [disabled]="mode === 'view'">
+                  <option *ngFor="let type of keyTypes" [value]="type.value">
+                    {{ type.label }}
+                  </option>
+                </select>
+                <div class="text-danger small" *ngIf="getFieldError('keyType')">
+                  {{ getFieldError('keyType') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+              <label for="description" class="form-label">Descripción</label>
+              <textarea class="form-control" 
+                        id="description" 
+                        rows="3" 
+                        formControlName="description"
+                        [readonly]="mode === 'view'"></textarea>
+            </div>
+
+            <!-- Expiración -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="expiresAt" class="form-label">Fecha de Expiración</label>
+                <input type="datetime-local" 
+                      class="form-control" 
+                      id="expiresAt" 
+                      formControlName="expiresAt"
+                      [disabled]="mode === 'view'">
+                <small class="text-muted">Dejar en blanco para no expirar</small>
+              </div>
+              <div class="col-md-6" *ngIf="mode !== 'create'">
+                <div class="form-check mt-4">
+                  <input class="form-check-input" 
+                        type="checkbox" 
+                        id="isActive" 
+                        formControlName="isActive"
+                        [disabled]="mode === 'view'">
+                  <label class="form-check-label" for="isActive">
+                    API Key Activa
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Permisos -->
+            <div class="mb-4">
+              <label class="form-label">Permisos *</label>
+              <div class="card">
+                <div class="card-body">
+                  <div *ngFor="let group of getPermissionsByResourceObject() | keyvalue" class="mb-3">
+                    <h6 class="text-primary">{{ group.key }}</h6>
+                    <div class="row">
+                      <div *ngFor="let permission of group.value" class="col-md-6 mb-2">
+                        <div class="form-check">
+                          <input class="form-check-input" 
+                                type="checkbox" 
+                                [id]="permission.id"
+                                [value]="permission.id"
+                                [checked]="isPermissionSelected(permission.id)"
+                                (change)="onPermissionChange(permission.id, $event)"
+                                [disabled]="mode === 'view'">
+                          <label class="form-check-label" [for]="permission.id">
+                            <strong>{{ permission.name }}</strong>
+                            <br>
+                            <small class="text-muted">{{ permission.description }}</small>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-danger small" *ngIf="permissionsArray.length === 0 && apiKeyForm.get('permissions')?.touched">
+                    Debe seleccionar al menos un permiso
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- API Key Generada (solo para creación) -->
+            <div *ngIf="mode === 'create'" class="mb-3">
+              <button type="button" 
+                      class="btn btn-outline-primary" 
+                      (click)="generateApiKey()">
+                <i class="bi bi-arrow-clockwise"></i> Generar API Key
+              </button>
+              <div *ngIf="generatedKey" class="mt-2">
+                <label class="form-label">API Key Generada:</label>
+                <div class="input-group">
+                  <input type="text" 
+                          class="form-control" 
+                          [value]="generatedKey" 
+                          readonly>
+                  <button type="button" 
+                          class="btn btn-outline-secondary" 
+                          (click)="copyToClipboard(generatedKey)">
+                    <i class="bi bi-clipboard"></i> Copiar
+                  </button>
+                </div>
+                <div class="alert alert-warning mt-2">
+                  <small>
+                    <i class="bi bi-exclamation-triangle"></i>
+                    Guarde esta API Key de forma segura. No podrá volver a verla.
+                  </small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" 
+                      class="btn btn-secondary" 
+                      (click)="onCancel()">
+                Cancelar
+              </button>
+              <button type="button" 
+                      *ngIf="mode === 'create'"
+                      class="btn btn-outline-primary" 
+                      (click)="resetForm()">
+                Limpiar
+              </button>
+              <button type="submit" 
+                      class="btn btn-primary" 
+                      [disabled]="!isFormValid || loading || mode === 'view'">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <span *ngIf="mode === 'create'">Crear API Key</span>
+                <span *ngIf="mode === 'edit'">Actualizar API Key</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel de Información -->
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">Información</h6>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <h6>Tipos de API Keys</h6>
+            <ul class="small">
+              <li><strong>API Access:</strong> Acceso general a endpoints</li>
+              <li><strong>Webhook:</strong> Para servicios webhook</li>
+              <li><strong>Integración:</strong> Para integraciones de terceros</li>
+              <li><strong>Mobile App:</strong> Para aplicaciones móviles</li>
+            </ul>
+          </div>
+          
+          <div class="mb-3">
+            <h6>Permisos</h6>
+            <p class="small text-muted">
+              Los permisos determinan a qué recursos puede acceder la API Key y qué acciones puede realizar.
+            </p>
+          </div>
+
+          <div class="alert alert-info">
+            <h6><i class="bi bi-info-circle"></i> Seguridad</h6>
+            <p class="small mb-0">
+              Las API Keys son credenciales sensibles. Trátelas como contraseñas y no las comparta públicamente.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

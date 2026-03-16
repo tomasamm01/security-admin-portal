@@ -1,0 +1,217 @@
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2>Asignación de Perfiles por Sistema</h2>
+      <p class="text-muted">Gestiona la asignación de perfiles a los diferentes sistemas</p>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-primary" (click)="exportarAsignaciones()">
+        <i class="bi bi-download"></i> Exportar
+      </button>
+    </div>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-primary">{{ getEstadisticas().totalSistemas }}</h5>
+          <p class="card-text">Total Sistemas</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-success">{{ getEstadisticas().totalAsignaciones }}</h5>
+          <p class="card-text">Total Asignaciones</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-info">{{ getEstadisticas().sistemasConAsignaciones }}</h5>
+          <p class="card-text">Con Perfiles</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title text-warning">{{ getEstadisticas().sistemasSinAsignaciones }}</h5>
+          <p class="card-text">Sin Perfiles</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtro -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="text" 
+               class="form-control" 
+               placeholder="Buscar por sistema o perfil..."
+               (input)="filtrarAsignaciones(($event.target as HTMLInputElement)?.value || '')">
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-2">Cargando asignaciones...</p>
+  </div>
+
+  <!-- Tabla de Asignaciones -->
+  <div *ngIf="!loading" class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Asignaciones Existentes</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="asignaciones.length === 0" class="text-center py-4">
+        <i class="bi bi-layers display-1 text-muted"></i>
+        <p class="text-muted mt-3">No hay asignaciones configuradas</p>
+        <button class="btn btn-outline-primary">
+          Configurar Primera Asignación
+        </button>
+      </div>
+
+      <div *ngIf="asignaciones.length > 0" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-dark">
+            <tr>
+              <th>Sistema</th>
+              <th>Perfiles Asignados</th>
+              <th>Cantidad</th>
+              <th>Última Actualización</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let sistema of asignaciones" 
+                [class.table-warning]="!tieneAsignaciones(sistema)">
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="bi bi-layers me-2"></i>
+                  <div>
+                    <strong>{{ sistema.sistemaNombre }}</strong>
+                    <br>
+                    <small class="text-muted">{{ getEstadoSistema(sistema) }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="tieneAsignaciones(sistema)">
+                  <small class="text-muted">
+                    {{ getPerfilesNombres(sistema) }}
+                  </small>
+                </div>
+                <span *ngIf="!tieneAsignaciones(sistema)" class="text-muted">
+                  <em>Sin perfiles asignados</em>
+                </span>
+              </td>
+              <td>
+                <span class="badge" [class]="getBadgeColor(sistema.perfilesAsignados.length)">
+                  {{ sistema.perfilesAsignados.length }}
+                </span>
+              </td>
+              <td>
+                <small>{{ getFechaUltimaActualizacion(sistema) }}</small>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" 
+                          class="btn btn-outline-primary" 
+                          (click)="verDetalles(sistema)"
+                          title="Ver detalles">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button type="button" 
+                          class="btn btn-outline-success" 
+                          (click)="asignarPerfiles(sistema)"
+                          title="Asignar perfiles">
+                    <i class="bi bi-plus-circle"></i>
+                  </button>
+                  <button type="button" 
+                          *ngIf="tieneAsignaciones(sistema)"
+                          class="btn btn-outline-danger" 
+                          (click)="eliminarAsignaciones(sistema)"
+                          title="Eliminar asignaciones"
+                          class="btn-confirm">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vista de Tarjetas (Alternative View) -->
+  <div *ngIf="!loading && asignaciones.length > 0" class="mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5>Vista de Tarjetas</h5>
+      <small class="text-muted">Alternativa a la vista de tabla</small>
+    </div>
+    
+    <div class="row">
+      <div *ngFor="let sistema of asignaciones" class="col-md-6 col-lg-4 mb-3">
+        <div class="card h-100" [class.border-warning]="!tieneAsignaciones(sistema)">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">{{ sistema.sistemaNombre }}</h6>
+            <span class="badge" [class]="getBadgeColor(sistema.perfilesAsignados.length)">
+              {{ sistema.perfilesAsignados.length }}
+            </span>
+          </div>
+          <div class="card-body">
+            <div *ngIf="tieneAsignaciones(sistema)">
+              <h6 class="text-muted small mb-2">Perfiles asignados:</h6>
+              <ul class="list-unstyled small">
+                <li *ngFor="let perfil of sistema.perfilesAsignados.slice(0, 3)" class="mb-1">
+                  <i class="bi bi-shield-check text-success me-1"></i>
+                  {{ perfil.perfilNombre }}
+                </li>
+                <li *ngIf="sistema.perfilesAsignados.length > 3" class="text-muted">
+                  <i class="bi bi-three-dots"></i> 
+                  y {{ sistema.perfilesAsignados.length - 3 }} más
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="!tieneAsignaciones(sistema)" class="text-center text-muted">
+              <i class="bi bi-inbox display-4"></i>
+              <p class="small mt-2">Sin perfiles asignados</p>
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="btn-group w-100" role="group">
+              <button type="button" 
+                      class="btn btn-sm btn-outline-primary" 
+                      (click)="verDetalles(sistema)">
+                <i class="bi bi-eye"></i>
+              </button>
+              <button type="button" 
+                      class="btn btn-sm btn-outline-success" 
+                      (click)="asignarPerfiles(sistema)">
+                <i class="bi bi-plus-circle"></i>
+              </button>
+              <button type="button" 
+                      *ngIf="tieneAsignaciones(sistema)"
+                      class="btn btn-sm btn-outline-danger" 
+                      (click)="eliminarAsignaciones(sistema)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
