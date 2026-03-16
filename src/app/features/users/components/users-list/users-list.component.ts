@@ -78,11 +78,11 @@ export class UsersListComponent implements OnInit {
   onActualizarEstado(user: any): void {
     const nuevoEstado = !user.estado;
     
-    this.usersService.updateUser(user.id, { ...user, estado: nuevoEstado }).subscribe({
+    this.usersService.updateUser({ ...user, estado: nuevoEstado }).subscribe({
       next: () => {
         this.loadUsers();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = 'Error al actualizar el estado del usuario';
         console.error(err);
       }
@@ -91,7 +91,7 @@ export class UsersListComponent implements OnInit {
 
   onAccionBoton(event: { accion: string; item: any }): void {
     if (event.accion === 'eliminar') {
-      this.eliminarUser(event.item.id);
+      this.eliminarUsuario(event.item.id);
     }
   }
 
@@ -99,13 +99,13 @@ export class UsersListComponent implements OnInit {
     this.loadUsers();
   }
 
-  eliminarUser(id: number): void {
+  eliminarUsuario(id: number): void {
     if (confirm('¿Está seguro de eliminar este usuario?')) {
       this.usersService.deleteUser(id).subscribe({
         next: () => {
           this.loadUsers();
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = 'Error al eliminar el usuario';
           console.error(err);
         }

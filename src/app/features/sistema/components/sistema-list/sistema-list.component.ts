@@ -77,11 +77,11 @@ export class SistemaListComponent implements OnInit {
   onActualizarEstado(sistema: any): void {
     const nuevoEstado = !sistema.estado;
     
-    this.sistemaService.updateSistema(sistema.id, { ...sistema, estado: nuevoEstado }).subscribe({
+    this.sistemaService.updateSistema({ ...sistema, estado: nuevoEstado }).subscribe({
       next: () => {
         this.loadSistemas();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = 'Error al actualizar el estado del sistema';
         console.error(err);
       }
@@ -104,7 +104,7 @@ export class SistemaListComponent implements OnInit {
         next: () => {
           this.loadSistemas();
         },
-        error: (err) => {
+        error: (err: any) => {
           this.error = 'Error al eliminar el sistema';
           console.error(err);
         }

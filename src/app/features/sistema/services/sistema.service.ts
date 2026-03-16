@@ -38,6 +38,11 @@ export class SistemaService {
     return this.http.post<boolean>(`${this.baseUrl}/sistema/update`, sistema);
   }
 
+  // DELETE: /sistema/delete
+  deleteSistema(id: number): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}/sistema/delete`, { id });
+  }
+
   // POST: /sistema/update-state
   updateEstado(updateData: UpdateState): Observable<boolean> {
     return this.http.post<boolean>(`${this.baseUrl}/sistema/update-state`, updateData);

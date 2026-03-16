@@ -131,6 +131,17 @@
           </div>
         </div>
         
+        <!-- Sección de Roles por Sistema -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <app-role-selector 
+              [usuarioId]="idUser || undefined"
+              [perfilesAsignados]="perfilesAsignados"
+              (perfilesChange)="onPerfilesChange($event)"
+            ></app-role-selector>
+          </div>
+        </div>
+        
         <!-- Error message -->
         <div *ngIf="error" class="alert alert-danger">
           {{ error }}

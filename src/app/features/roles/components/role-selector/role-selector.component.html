@@ -1,0 +1,106 @@
+<div class="role-selector">
+  <div class="card">
+    <div class="card-header bg-info text-white">
+      <h6 class="mb-0">
+        <i class="bi bi-shield-check me-2"></i>
+        Asignación de Perfiles por Sistema
+      </h6>
+    </div>
+    
+    <div class="card-body">
+      <!-- Formulario de selección -->
+      <div class="row mb-4">
+        <div class="col-md-5">
+          <label for="sistema-select" class="form-label">Sistema</label>
+          <select 
+            class="form-select"
+            id="sistema-select"
+            [value]="roleForm.get('sistemaSeleccionado')?.value"
+            (change)="onSistemaChange($event)"
+          >
+            <option value="">Seleccionar sistema...</option>
+            <option *ngFor="let sistema of sistemas" [value]="sistema.id">
+              {{ sistema.nombre }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-5">
+          <label for="perfil-select" class="form-label">Perfil</label>
+          <select 
+            class="form-select"
+            id="perfil-select"
+            [value]="roleForm.get('perfilSeleccionado')?.value"
+            [disabled]="!perfilesDisponibles.length"
+          >
+            <option value="">Seleccionar perfil...</option>
+            <option *ngFor="let perfil of perfilesDisponibles" [value]="perfil.id">
+              {{ perfil.nombre }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="col-md-2 d-flex align-items-end">
+          <button 
+            type="button" 
+            class="btn btn-success w-100"
+            (click)="agregarPerfil()"
+            [disabled]="!roleForm.get('sistemaSeleccionado')?.value || !roleForm.get('perfilSeleccionado')?.value"
+          >
+            <i class="bi bi-plus-circle me-1"></i>
+            Agregar
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de perfiles asignados -->
+      <div class="assigned-perfiles">
+        <h6 class="mb-3">Perfiles Asignados</h6>
+        
+        <div *ngIf="perfilesAsignados.length === 0" class="text-muted text-center py-3">
+          <i class="bi bi-info-circle me-2"></i>
+          No hay perfiles asignados
+        </div>
+        
+        <div *ngIf="perfilesAsignados.length > 0" class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Sistema</th>
+                <th>Perfil</th>
+                <th class="text-center" style="width: 80px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let perfil of perfilesAsignados; let i = index">
+                <td>
+                  <span class="badge bg-primary">{{ perfil.sistemaNombre }}</span>
+                </td>
+                <td>{{ perfil.perfilNombre }}</td>
+                <td class="text-center">
+                  <button 
+                    type="button" 
+                    class="btn btn-sm btn-outline-danger"
+                    (click)="eliminarPerfil(i)"
+                    title="Eliminar perfil"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Información adicional -->
+      <div class="alert alert-info mt-3" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        <small>
+          Seleccione un sistema para ver los perfiles disponibles. 
+          Puede asignar múltiples perfiles de diferentes sistemas al usuario.
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

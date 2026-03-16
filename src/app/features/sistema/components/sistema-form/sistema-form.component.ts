@@ -72,9 +72,14 @@ export class SistemaFormComponent implements OnInit {
     this.error = null;
 
     const sistema: Sistema = this.sistemaForm.value;
+    
+    // Agregar ID si es actualización
+    if (this.idSistema) {
+      sistema.id = this.idSistema;
+    }
 
     const operation = this.idSistema
-      ? this.sistemaService.updateSistema(this.idSistema, sistema)
+      ? this.sistemaService.updateSistema(sistema)
       : this.sistemaService.createSistema(sistema);
 
     operation.subscribe({

@@ -38,6 +38,11 @@ export class UsersService {
     return this.http.post<boolean>(`${this.baseUrl}/usuario/update`, user);
   }
 
+  // DELETE: /usuario/delete
+  deleteUser(id: number): Observable<boolean> {
+    return this.http.post<boolean>(`${this.baseUrl}/usuario/delete`, { id });
+  }
+
   // POST: /usuario/update-state
   updateEstado(updateData: UpdateUserState): Observable<boolean> {
     return this.http.post<boolean>(`${this.baseUrl}/usuario/update-state`, updateData);

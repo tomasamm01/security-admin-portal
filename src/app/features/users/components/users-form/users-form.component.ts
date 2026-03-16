@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UsersService } from '../../services/users.service';
 import { Users } from '../../models/users.model';
+import { PerfilAsignado } from '../../../roles/models/perfil.model';
 
 @Component({
   selector: 'app-user-form',
@@ -15,6 +16,7 @@ export class UsersFormComponent implements OnInit {
   loading = false;
   error: string | null = null;
   imagenPreview: string | null = null;
+  perfilesAsignados: PerfilAsignado[] = [];
 
   roles = ['ADMINISTRADOR', 'TESORERIA', 'MESA DE ENTRADAS', 'USUARIO'];
   departamentos = ['SISTEMAS', 'TESORERIA', 'MESA DE ENTRADAS', 'ADMINISTRACION', 'RRHH'];
@@ -86,7 +88,7 @@ export class UsersFormComponent implements OnInit {
     }
 
     const operation = this.idUser
-      ? this.usersService.updateUser(this.idUser, user)
+      ? this.usersService.updateUser(user)
       : this.usersService.createUser(user);
 
     operation.subscribe({
@@ -104,5 +106,13 @@ export class UsersFormComponent implements OnInit {
   onFileChange(event: any): void {
     // El usuario agregará el manejo de archivos aquí
     console.log('Archivo seleccionado:', event.target.files[0]);
+  }
+
+  /**
+   * Maneja los cambios en los perfiles asignados
+   */
+  onPerfilesChange(perfiles: PerfilAsignado[]): void {
+    this.perfilesAsignados = perfiles;
+    console.log('Perfiles actualizados:', perfiles);
   }
 }
