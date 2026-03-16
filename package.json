@@ -22,7 +22,6 @@
     "@auth0/angular-jwt": "^5.1.2",
     "@ng-bootstrap/ng-bootstrap": "^13.0.0",
     "@popperjs/core": "^2.11.8",
-    "angularx-qrcode": "^19.0.0",
     "bootstrap": "^5.2.0",
     "bootstrap-icons": "^1.10.5",
     "file-saver": "^2.0.5",
