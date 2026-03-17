@@ -28,10 +28,10 @@ export class SistemaListComponent implements OnInit {
 
   botonesAccion = [
     { 
-      nombre: 'eliminar', 
-      titulo: 'Eliminar', 
-      icono: 'bi bi-trash', 
-      clase: 'btn-outline-danger' 
+      nombre: 'Api key', 
+      titulo: 'Ver API Key', 
+      icono: 'bi bi-key', 
+      clase: 'btn-outline-info' 
     }
   ];
 
@@ -50,11 +50,19 @@ export class SistemaListComponent implements OnInit {
     
     this.sistemaService.getSistemas().subscribe({
       next: (data) => {
-        // Mapear datos al formato que espera menu-listado
-        this.sistemas = data.map(sistema => ({
-          ...sistema,
-          activo: !sistema.estado // menu-listado usa 'activo' para indicar estado deshabilitado
-        }));
+        // Mapear datos: invertir 'activo' porque menu-listado usa activo=true para deshabilitado
+        // Backend: activo=true (habilitado), activo=false (deshabilitado)
+        // Menu-listado: activo=true (deshabilitado/rojo), activo=false (habilitado/verde)
+        this.sistemas = data
+          .map(sistema => ({
+            ...sistema,
+            activo: !sistema.activo // Invertir la lógica
+          }))
+          .sort((a, b) => {
+            // Ordenar: habilitados primero (activo=false en menu-listado)
+            if (a.activo === b.activo) return 0;
+            return a.activo ? 1 : -1;
+          });
         this.loading = false;
       },
       error: (err) => {
@@ -71,13 +79,13 @@ export class SistemaListComponent implements OnInit {
   }
 
   onEditar(sistema: any): void {
-    this.router.navigate(['/sistemas/formulario', sistema.id]);
+    this.router.navigate(['/sistemas/formulario', sistema.idSistema]);
   }
 
   onActualizarEstado(sistema: any): void {
-    const nuevoEstado = !sistema.estado;
+    const nuevoEstado = !sistema.activo;
     
-    this.sistemaService.updateSistema({ ...sistema, estado: nuevoEstado }).subscribe({
+    this.sistemaService.updateSistema({ ...sistema, activo: nuevoEstado }).subscribe({
       next: () => {
         this.loadSistemas();
       },
@@ -90,7 +98,7 @@ export class SistemaListComponent implements OnInit {
 
   onAccionBoton(event: { accion: string; item: any }): void {
     if (event.accion === 'eliminar') {
-      this.eliminarSistema(event.item.id);
+      this.eliminarSistema(event.item.idSistema);
     }
   }
 
@@ -98,9 +106,9 @@ export class SistemaListComponent implements OnInit {
     this.loadSistemas();
   }
 
-  eliminarSistema(id: number): void {
+  eliminarSistema(idSistema: number): void {
     if (confirm('¿Está seguro de eliminar este sistema?')) {
-      this.sistemaService.deleteSistema(id).subscribe({
+      this.sistemaService.deleteSistema(idSistema).subscribe({
         next: () => {
           this.loadSistemas();
         },

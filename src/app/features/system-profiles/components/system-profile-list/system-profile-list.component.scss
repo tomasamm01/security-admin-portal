@@ -149,6 +149,132 @@
   transform: translateY(-1px);
 }
 
+:host-context(.theme-dark) {
+  .container-fluid {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  
+  .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+    
+    &:hover {
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+    }
+    
+    .card-header {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    .card-body {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+    }
+    
+    .card-footer {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+  }
+  
+  .table {
+    color: var(--text-primary);
+    background-color: transparent;
+    
+    thead {
+      th {
+        background-color: var(--bg-tertiary);
+        border-color: var(--border-color);
+        color: var(--text-primary);
+      }
+    }
+    
+    tbody {
+      tr {
+        background-color: transparent;
+        
+        &:hover {
+          background-color: var(--hover-bg);
+        }
+        
+        &.table-warning {
+          background-color: rgba(255, 193, 7, 0.15) !important;
+          
+          td {
+            color: var(--text-primary);
+          }
+        }
+      }
+      
+      td {
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        background-color: transparent;
+      }
+    }
+    
+    .table-dark {
+      background-color: var(--bg-tertiary);
+      
+      th {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+        border-color: var(--border-color);
+      }
+    }
+    
+    .table-light {
+      background-color: var(--bg-tertiary);
+      
+      th {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+      }
+    }
+  }
+  
+  .form-control,
+  .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    &:focus {
+      background-color: var(--input-bg);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+    }
+  }
+  
+  .input-group-text {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  
+  .text-muted {
+    color: var(--text-muted) !important;
+  }
+  
+  .spinner-border {
+    color: var(--text-primary);
+  }
+  
+  .border-warning {
+    border-color: rgba(255, 193, 7, 0.5) !important;
+  }
+  
+  .list-unstyled li {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
 // Statistics cards animation
 .card-body h5 {
   transition: color 0.3s ease;

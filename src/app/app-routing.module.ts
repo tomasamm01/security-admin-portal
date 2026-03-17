@@ -6,6 +6,7 @@ const routes: Routes = [
   { path: 'home', loadChildren: () => import('./features/home/home.module').then(m => m.HomeModule) },
   { path: 'sistemas', loadChildren: () => import('./features/sistema/sistema.module').then(m => m.SistemaModule) },
   { path: 'users', loadChildren: () => import('./features/users/users.module').then(m => m.UsersModule) },
+  { path: 'perfiles', loadChildren: () => import('./features/profiles/profiles.module').then(m => m.ProfilesModule) },
   { path: '**', redirectTo: '/home' }
 ];
 

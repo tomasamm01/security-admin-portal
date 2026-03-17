@@ -50,3 +50,217 @@
   background-color: rgba(220, 53, 69, 0.1) !important;
   color: #721c24 !important;
 }
+
+:host-context(.theme-dark) {
+  .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    
+    .card-header {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    .card-body {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+    }
+  }
+  
+  .table {
+    color: var(--text-primary);
+    background-color: transparent;
+    
+    thead th {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    tbody {
+      tr {
+        background-color: transparent;
+        
+        &:hover {
+          background-color: var(--hover-bg);
+        }
+      }
+      
+      td {
+        border-color: var(--border-color);
+        color: var(--text-primary);
+        background-color: transparent;
+      }
+    }
+    
+    .table-light {
+      background-color: var(--bg-tertiary);
+      
+      th {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+      }
+    }
+  }
+  
+  .form-control,
+  .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    &:focus {
+      background-color: var(--input-bg);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+      box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+    }
+    
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+  
+  .input-group-text {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    i {
+      color: var(--text-primary);
+    }
+  }
+  
+  .search-container .input-group-text {
+    border-color: var(--border-color);
+    background-color: var(--bg-tertiary);
+    
+    i {
+      color: var(--text-secondary);
+    }
+  }
+  
+  .alert {
+    &.alert-danger {
+      background-color: rgba(220, 53, 69, 0.15);
+      border-color: rgba(220, 53, 69, 0.3);
+      color: #f8d7da;
+    }
+  }
+  
+  .text-bg-danger {
+    background-color: rgba(220, 53, 69, 0.2) !important;
+    color: #f8d7da !important;
+  }
+  
+  .empty-state {
+    color: var(--text-muted);
+    
+    i {
+      color: var(--text-muted);
+    }
+    
+    h5, p {
+      color: var(--text-muted);
+    }
+  }
+  
+  .spinner-border {
+    color: var(--text-primary);
+  }
+  
+  .btn-primary {
+    background-color: #1B432C;
+    border-color: #1B432C;
+    color: #ffffff;
+    
+    &:hover {
+      background-color: #153525;
+      border-color: #153525;
+      color: #ffffff;
+    }
+    
+    &:focus {
+      background-color: #1B432C;
+      border-color: #1B432C;
+      box-shadow: 0 0 0 0.25rem rgba(27, 67, 44, 0.5);
+    }
+  }
+  
+  .btn-outline-primary,
+  .btn-outline-info,
+  .btn-outline-danger,
+  .btn-outline-success,
+  .btn-outline-secondary {
+    border: none;
+    background-color: transparent;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1.1);
+    }
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+  
+  .btn-outline-primary {
+    i {
+      color: #66bb6a;
+      font-size: 1.1rem;
+    }
+    
+    &:hover i {
+      color: #81c784;
+    }
+  }
+  
+  .btn-outline-info {
+    i {
+      color: #29b6f6;
+      font-size: 1.1rem;
+    }
+    
+    &:hover i {
+      color: #4fc3f7;
+    }
+  }
+  
+  .btn-outline-danger {
+    i {
+      color: #ef5350;
+      font-size: 1.1rem;
+    }
+    
+    &:hover i {
+      color: #e57373;
+    }
+  }
+  
+  .btn-outline-success {
+    i {
+      color: #66bb6a;
+      font-size: 1.1rem;
+    }
+    
+    &:hover i {
+      color: #81c784;
+    }
+  }
+  
+  .btn-outline-secondary {
+    i {
+      color: #bdbdbd;
+      font-size: 1.1rem;
+    }
+    
+    &:hover i {
+      color: #e0e0e0;
+    }
+  }
+}

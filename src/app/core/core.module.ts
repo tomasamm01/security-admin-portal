@@ -13,6 +13,7 @@ import { ConfirmModalComponent } from './components/modals/confirm-modal/confirm
 import { ErrorModalComponent } from './components/modals/error-modal/error-modal.component';
 import { SessionExpiredModalComponent } from './components/modals/session-expired-modal/session-expired-modal.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle.component';
 import { SidebarNavModule } from './layout/sidebar/sidebar-nav/sidebar-nav.module';
 
 @NgModule({
@@ -24,7 +25,8 @@ import { SidebarNavModule } from './layout/sidebar/sidebar-nav/sidebar-nav.modul
     ConfirmModalComponent,
     ErrorModalComponent,
     SessionExpiredModalComponent,
-    ModalComponent
+    ModalComponent,
+    ThemeToggleComponent
   ],
   imports: [
     CommonModule,
@@ -44,6 +46,7 @@ import { SidebarNavModule } from './layout/sidebar/sidebar-nav/sidebar-nav.modul
     ErrorModalComponent,
     SessionExpiredModalComponent,
     ModalComponent,
+    ThemeToggleComponent,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

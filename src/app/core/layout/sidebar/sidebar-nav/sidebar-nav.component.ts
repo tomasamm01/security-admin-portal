@@ -13,6 +13,6 @@ export class SidebarNavComponent {
   }
   
   toggleDropdown(item: any): void {
-    // Implementación simplificada
+    item.isOpen = !item.isOpen;
   }
 }

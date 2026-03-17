@@ -27,17 +27,33 @@ export class SidebarComponent {
       allowedProfiles : undefined 
     },
     {
-      routerLink      : ['/sistemas'],
-      title           : 'Sistemas',
+      title           : 'Gestión de Sistemas',
       icon            : 'bi bi-gear',
       tooltip         : 'Gestión de Sistemas',
-      allowedProfiles : undefined 
+      allowedProfiles : undefined,
+      isOpen          : false,
+      children        : [
+        {
+          routerLink      : ['/sistemas'],
+          title           : 'Listado de Sistemas',
+          icon            : 'bi bi-list-ul',
+          tooltip         : 'Listado de Sistemas',
+          allowedProfiles : undefined
+        }
+      ]
     },
     {
       routerLink      : ['/users'],
       title           : 'Usuarios',
       icon            : 'bi bi-people',
       tooltip         : 'Gestión de Usuarios',
+      allowedProfiles : undefined 
+    },
+    {
+      routerLink      : ['/perfiles'],
+      title           : 'Perfiles',
+      icon            : 'bi bi-person-badge',
+      tooltip         : 'Gestión de Perfiles',
       allowedProfiles : undefined 
     }
     // Aquí se agregarán nuevas funcionalidades según se necesiten

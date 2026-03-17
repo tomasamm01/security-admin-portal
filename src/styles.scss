@@ -8,6 +8,32 @@ $primary:#1B432C;
   --sidebar-expanded: 250px;
   --content-padding-collapsed: 30px;
   --content-padding-expanded: 15px;
+  
+  /* Theme variables - Light theme (default) */
+  --bg-primary: #fcfcfc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8f9fa;
+  --text-primary: #1B432C;
+  --text-secondary: #575757;
+  --text-muted: #6c757d;
+  --border-color: #dee2e6;
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --hover-bg: #f8f9fa;
+}
+
+/* Dark theme variables */
+.theme-dark {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --text-muted: #808080;
+  --border-color: #404040;
+  --card-bg: #2d2d2d;
+  --input-bg: #404040;
+  --hover-bg: #4a4a4a;
 }
 
 /* Media queries para diferentes dispositivos */
@@ -59,10 +85,11 @@ $theme-colors: map-merge($theme-colors, $custom-colors);
 html,
 body {
   height: 100%;
-  color:#1B432C;
+  color: var(--text-primary);
   font-size: 15px;
   font-family: 'gotham_roundedbook';
-  background-color: #fcfcfc;
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1{
@@ -113,3 +140,161 @@ h1, h2{
 
 @import "../node_modules/quill/dist/quill.core.css";
 @import "../node_modules/quill/dist/quill.snow.css";
+
+/* Theme-specific styles */
+.theme-dark {
+  /* Sidebar - Mantener verde intacto */
+  .sidebar {
+    background: #1B432C !important;
+    color: #fff !important;
+    
+    .header {
+      background: #1B432C !important;
+      
+      &.clickable:hover {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+      }
+    }
+    
+    .footer {
+      border-top-color: rgba(255, 255, 255, 0.1) !important;
+    }
+  }
+  
+  /* Cards */
+  .card {
+    background-color: var(--card-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    .card-header {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    .card-body {
+      color: var(--text-primary);
+    }
+    
+    .card-footer {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+  }
+  
+  /* Forms */
+  .form-control {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    &:focus {
+      background-color: var(--input-bg);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+    
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+  
+  .form-select {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    
+    &:focus {
+      background-color: var(--input-bg);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+  }
+  
+  /* Tables */
+  .table {
+    color: var(--text-primary);
+    
+    thead th {
+      background-color: var(--bg-tertiary);
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    tbody td {
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    
+    tbody tr:hover {
+      background-color: var(--hover-bg);
+    }
+  }
+  
+  /* Buttons */
+  .btn {
+    &.btn-outline-primary {
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+      
+      &:hover {
+        background-color: var(--text-primary);
+        color: var(--bg-primary);
+      }
+    }
+    
+    &.btn-outline-secondary {
+      border-color: var(--text-muted);
+      color: var(--text-muted);
+      
+      &:hover {
+        background-color: var(--text-muted);
+        color: var(--bg-primary);
+      }
+    }
+  }
+  
+  /* Badges */
+  .badge {
+    &.bg-secondary {
+      background-color: var(--text-muted) !important;
+    }
+  }
+  
+  /* Alerts */
+  .alert {
+    &.alert-info {
+      background-color: rgba(13, 202, 240, 0.1);
+      border-color: rgba(13, 202, 240, 0.3);
+      color: #0dcaf0;
+    }
+    
+    &.alert-warning {
+      background-color: rgba(255, 193, 7, 0.1);
+      border-color: rgba(255, 193, 7, 0.3);
+      color: #ffc107;
+    }
+  }
+  
+  /* Breadcrumb */
+  .breadcrumb {
+    background-color: var(--bg-tertiary);
+    
+    a {
+      color: var(--text-secondary) !important;
+      
+      &:hover {
+        color: var(--text-primary) !important;
+      }
+    }
+  }
+  
+  /* Input group */
+  .input-group-text {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+}

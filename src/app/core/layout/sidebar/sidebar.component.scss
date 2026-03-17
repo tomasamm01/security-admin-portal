@@ -111,7 +111,7 @@
   .content {
     overflow-x: hidden;
     overflow-y: auto;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 140px);
 
     &::-webkit-scrollbar {
       width: 6px;
@@ -129,5 +129,20 @@
         background: rgba(255, 255, 255, 0.3);
       }
     }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: #1B432C;
+    min-height: 70px;
+    z-index: 10;
   }
 }

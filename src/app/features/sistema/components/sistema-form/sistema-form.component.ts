@@ -51,7 +51,7 @@ export class SistemaFormComponent implements OnInit {
     this.sistemaService.getSistemaById(this.idSistema).subscribe({
       next: (sistema) => {
         this.sistemaForm.patchValue(sistema);
-        this.imagenPreview = sistema.imagen || null;
+        // this.imagenPreview = sistema?.imagen || null;
         this.loading = false;
       },
       error: (err) => {
@@ -75,7 +75,7 @@ export class SistemaFormComponent implements OnInit {
     
     // Agregar ID si es actualización
     if (this.idSistema) {
-      sistema.id = this.idSistema;
+      sistema.idSistema = this.idSistema;
     }
 
     const operation = this.idSistema
